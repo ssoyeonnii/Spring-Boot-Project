@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bitc.java501team3.mapper.MainMapper">
+    <insert id="insertFav" parameterType="map">
+        insert into fav_list (fav_list_user_id, fav_list_store_idx)
+        values(#{loggedInUserId},#{favListStoreIdx});
+    </insert>
+
+    <update id="deleteFav" parameterType="map">
+        DELETE FROM
+            fav_list
+        WHERE
+            fav_list_user_id =#{loggedInUserId}
+        AND
+            fav_list_store_idx = #{favListStoreIdx};
+    </update>
+
+    <select id="selectFavList" parameterType="string" resultType="com.bitc.java501team3.dto.FavListDTO">
+        SELECT
+            fav_list_store_idx
+        FROM
+            fav_list
+        WHERE
+            fav_list_user_id = #{loggedInUserId}
+    </select>
+
+    <select id="getCard" resultType="com.bitc.java501team3.dto.hotPlaceDTO.ApiDbDTO">
+        select
+            MAIN_IMG_NORMAL, MAIN_TITLE, ADDR1
+        from
+            hotplace
+    </select>
+
+    <select id="searchGetCard" parameterType="String" resultType="com.bitc.java501team3.dto.hotPlaceDTO.ApiDbDTO">
+        SELECT
+            idx,UC_SEQ, MAIN_TITLE, GUGUN_NM, PLACE, TITLE, ADDR1, CNTCT_TEL, HOMEPAGE_URL, USAGE_DAY_WEEK_AND_TIME, RPRSNTV_MENU, MAIN_IMG_NORMAL, ITEMCNTNTS, CATEGORY
+        FROM
+            hotplace
+        WHERE
+            MAIN_TITLE LIKE concat('%', #{'keyword'} , '%')
+    </select>
+</mapper>

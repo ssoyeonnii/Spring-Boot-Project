@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <script src="/js/bootstrap.bundle.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <meta name="viewport"
+          content="width=device-width, height=device-height, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
+
+    <!--    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.5/angular.min.js"></script>-->
+    <!--    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
+    <!--    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"></script>-->
+    <title>Title</title>
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: visible;
+        }
+        .login-page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: #fff;
+        }
+
+        .login-page .login-content {
+            width: 420px;
+            padding: 40px;
+            height: 500px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            position: absolute;
+            background: #FFF;
+            box-shadow: 0 0px 70px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid blue;
+            float: left;
+            transition: all 0.2s ease-out;
+            transition-delay: 0.2s;
+        }
+
+        .login-page .login-content.login-content-signin.ng-hide:not(.ng-hide-animate) {
+            transition-delay: 0s;
+            display: block !important;
+            opacity: 0;
+            z-index: -1;
+            transform: translate(-45%, -50%);
+        }
+
+        .login-page .login-content.login-content-signup.ng-hide:not(.ng-hide-animate) {
+            transition-delay: 0s;
+            display: block !important;
+            opacity: 0;
+            z-index: -1;
+            transform: translate(-55%, -50%);
+        }
+
+        .login-page .login-content h2 {
+            text-align: left;
+            color: blue;
+            /*text-transform: uppercase;*/
+            letter-spacing: 1px;
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .login-page .login-content form.wrapper-box {
+            margin-top: 40px;
+        }
+
+        .login-page .login-content form.wrapper-box input {
+            margin-bottom: 10px;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0;
+            padding-left: 0;
+            box-shadow: none;
+            transition: all 0.1s ease-out;
+        }
+
+        /*.login-page .login-content form.wrapper-box2 input {*/
+        /*    border: none;*/
+        /*    border-bottom: 1px solid rgba(0, 0, 0, 0.1);*/
+        /*    border-radius: 0;*/
+        /*    padding-left: 0;*/
+        /*    box-shadow: none;*/
+        /*    transition: all 0.1s ease-out;*/
+        /*}*/
+
+        .login-page .login-content form.wrapper-box input:valid {
+            border-bottom: 1px solid blue;
+        }
+
+        .login-page .login-content form.wrapper-box input:focus:invalid {
+            border-bottom: 1px solid #EF6161;
+        }
+
+        .login-page .login-content form.wrapper-box ::-webkit-input-placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .login-page .login-content form.wrapper-box :-moz-placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .login-page .login-content form.wrapper-box ::-moz-placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .login-page .login-content form.wrapper-box :-ms-input-placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .login-page .login-content form.wrapper-box button {
+            display: inline-block;
+            margin-top: 50px;
+            border: 2px solid blue;
+            background: blue;
+            border-radius: 25px;
+            padding: 3px 12px 5px 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0px;
+            transition: all 0.1s ease-out;
+        }
+
+        .login-page .login-content form.wrapper-box button:hover {
+            color: blue;
+            background: #fff;
+            border: 2px solid blue;
+        }
+
+        .login-page .login-content form.wrapper-box button:active {
+            box-shadow: none;
+        }
+
+        .login-page .login-content .outer-link {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 5px 0;
+            display: block;
+            color: rgba(0, 0, 0, 0.4);
+            transition: all 0.1s ease-out;
+        }
+
+        .login-page .login-content .outer-link:hover {
+            transition: all 0s ease-out;
+            color: rgba(0, 0, 0, 0.8);
+            text-decoration: none;
+        }
+
+        .login-page .login-content.login-content-signin > div,
+        .login-page .login-content.login-content-signup > div {
+            overflow: hidden;
+            top: 50%;
+            position: relative;
+            transform: translateY(-50%);
+        }
+
+        .login-page .login-content.login-content-signin {
+            margin-left: -130px;
+        }
+
+        .login-page .login-content.login-content-signup {
+            margin-left: 130px;
+        }
+
+        .login-page .login-switcher {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+            width: 660px;
+            height: 400px;
+            box-shadow: 0 0px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .login-page .login-switcher > div {
+            width: 40%;
+            margin-top: 125px;
+        }
+
+        .login-page .login-switcher > div.login-switcher-signin {
+            float: left;
+        }
+
+        .login-page .login-switcher > div.login-switcher-signup {
+            float: right;
+        }
+
+        .login-page .login-switcher > div h3 {
+            color: rgba(0, 0, 0, 0.4);
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .login-page .login-switcher > div button {
+            display: block;
+            margin: 20px auto 0 auto;
+            outline: 0;
+            background: none;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            color: rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            font-size: 14px;
+            padding: 4px 12px 5px 12px;
+            transition: all 0.1s ease-out;
+        }
+
+        .login-page .login-switcher > div button:hover {
+            border: 2px solid blue !important;
+            color: rgba(0, 0, 0, 0.8);
+        }
+
+        .login-page .login-switcher .login-switcher-signin,
+        .login-page .login-switcher .login-switcher-signup {
+            transition: all 0.1s ease-out;
+        }
+
+        .login-page .login-switcher .login-switcher-signin.ng-hide:not(.ng-hide-animate),
+        .login-page .login-switcher .login-switcher-signup.ng-hide:not(.ng-hide-animate) {
+            display: block !important;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+    </style>
+
+    <script th:if="${param.loginError}" type="text/javascript">
+        alert("로그인 정보가 다릅니다.");
+    </script>
+
+    <script th:if="${param.joinError}" type="text/javascript">
+        alert("중복된 ID입니다. 다른 ID를 입력해주세요.");
+    </script>
+
+    <script th:if="${param.joinMsg}" type="text/javascript">
+        alert("회원가입이 완료되었습니다.");
+    </script>
+
+</head>
+<body>
+
+<!--<div th:if="${param.errorMsg}" class="alert alert-danger">-->
+<!--    <p th:text="${param.errorMsg}"></p>-->
+<!--</div>-->
+
+<div class="login-page" ng-app="">
+
+
+    <div class="login-content login-content-signin" ng-hide="showSignIn">
+        <a href="/home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-house-door"
+                 viewBox="0 0 16 16">
+                <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z"/>
+            </svg>
+        </a>
+        <div>
+            <h2>로그인</h2>
+            <form action="/user/loginProcess" method="POST" class="wrapper-box" role="form" ng-submit="login()">
+                <label for="_userid">아이디</label>
+                <input type="text"
+                       id="_userid"
+                       name="userId"
+                       class="form-control form-control-email"
+                       required>
+                <label for="_userpd">비밀번호</label>
+                <input type="password"
+                       id="_userpd"
+                       name="userPw"
+                       class="form-control form-control-password"
+                       required>
+                <!-- <div class="checkbox pull-left">
+                  <label>
+                    <input type="checkbox"> Remember me.
+                  </label>
+                </div> -->
+                <button type="submit" class="btn btn-submit btn-default pull-right text-end" th:href="@{/user/join}">로그인
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="login-content login-content-signup ng-hide" ng-show="showSignIn">
+
+        <div>
+            <h2>회원가입</h2>
+            <form action="/user/insert" method="POST" class="wrapper-box" role="form" ng-submit="register()">
+                <label for="username">이름</label>
+                <input type="text"
+                       id="username"
+                       name="userName"
+                       class="form-control form-control-username"
+                       autocomplete="off"
+                       required>
+                <label for="userid">아이디</label>
+                <input type="text"
+                       id="userid"
+                       name="userId"
+                       class="form-control form-control"
+                       autocomplete="off"
+                       required>
+                <label for="userpw">비밀번호</label>
+                <input type="password"
+                       id="userpw"
+                       name="userPw"
+                       class="form-control form-control-password"
+                       autocomplete="off"
+                       required>
+                <label for="addr">선호지역</label>
+                <select class="form-control mt-4" id="addr" name="userAddress">-->
+                    <option value="" selected>--------------Select--------------</option>
+                    <option value="강서구">강서구</option>
+                    <option value="금정구">금정구</option>
+                    <option value="기장군">기장군</option>
+                    <option value="남구">남구</option>
+                    <option value="동구">동구</option>
+                    <option value="동래구">동래구</option>
+                    <option value="부산진구">부산진구</option>
+                    <option value="북구">북구</option>
+                    <option value="사상구">사상구</option>
+                    <option value="사하구">사하구</option>
+                    <option value="서구">서구</option>
+                    <option value="수영구">수영구</option>
+                    <option value="연제구">연제구</option>
+                    <option value="영도구">영도구</option>
+                    <option value="중구">중구</option>
+                    <option value="해운대구">해운대구</option>
+                </select>
+                <button type="submit" class="btn btn-submit btn-default pull-right">가입하기</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="login-switcher">
+        <div class="login-switcher-signin" ng-show="showSignIn">
+            <h3>무라무라 <br> 회원이신가요?</h3>
+            <button ng-click="showSignIn=false">로그인하기</button>
+        </div>
+        <div class="login-switcher-signup" ng-hide="showSignIn">
+            <h3>무라무라 <br> 회원이 아니신가요?</h3>
+            <button ng-click="showSignIn=true">회원가입하기</button>
+        </div>
+    </div>
+
+
+</div>
+
+
+</div>
+</body>
+</html>

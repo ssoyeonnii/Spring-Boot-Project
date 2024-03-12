@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: visible;
+        }
+
+        .table-container th {
+            background-color: #D8F6CE;
+            color: black;
+        }
+        .page-link {
+            color: #000;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .page-item.active .page-link {
+            z-index: 1;
+            color: #555;
+            font-weight:bold;
+            background-color: #f1f1f1;
+            border-color: #ccc;
+
+        }
+
+        .page-link:focus, .page-link:hover {
+            color: #000;
+            background-color: #fafafa;
+            border-color: #ccc;
+        }
+
+        /*html, body{height: 100%}*/
+
+        /*.container{*/
+        /*    height:auto;*/
+        /*    min-height: 100%;*/
+        /*    padding-bottom: 145px;*/
+        /*}*/
+
+        header{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            z-index: 1000;
+            background-color: white;
+        }
+
+        /*footer{*/
+        /*    height: 145px;*/
+        /*    position: relative;*/
+        /*    transform : translateY(-100%);*/
+        /*}*/
+
+    </style>
+</head>
+<body>
+<div th:replace="~{/layout/header :: headerNavbar}"></div>
+
+<main class="container">
+    <div style="margin-top : 150px" class="text-center">
+        <div class="border-bottom border-1 border-black mx-auto pb-2" style="width: 500px">
+            <h2><small>작성한 게시물</small></h2>
+        </div>
+    </div>
+    <div class="row mt-5 table-container">
+        <div class="col-sm">
+            <table class="table table-hover text-center">
+                <colgroup>
+                    <col style="width : 55%">
+                    <col style="width : 15%">
+                    <col style="width : 20%">
+                    <col style="width : 15%">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>글제목</th>
+                    <th>작성자</th>
+                    <th>등록일</th>
+                    <th>조회수</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.size(boardPageList.getList())} > 0 " th:each="item : ${boardPageList.getList()}">
+                    <td class="text-start">
+                        <!--                        href에 자유게시판 상세보기 링크 넣어주삼-->
+                        <a href="/board/boardDetail.do?boardIdx=" th:attrappend="href=${item.boardIdx}"
+                           th:text="${item.boardTitle}" class="text-decoration-none text-dark"></a>
+                    </td>
+                    <td th:text="${item.boardUserId}"></td>
+                    <td th:text="${item.boardCreateDate}"></td>
+                    <td th:text="${item.boardHitcnt}"></td>
+                </tr>
+                <tr th:unless="${#lists.size(writingList)} > 0">
+                    <td colspan="4">조회된 결과가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <!--            이전 페이지 버튼-->
+                    <!--            th:classappend : thymeleaf를 통해서 기존 class 속성에 내용 추가 -->
+                    <!--            getPrePage() : PageHelper 클래스 타입의 객체가 가지고 있는 prePage 값 가져오기 -->
+                    <li class="page-item" th:classappend="${boardPageList.getPrePage() == 0} ? 'disabled'">
+                        <a class="page-link " href="#"
+                           th:href="@{/user/writingList(pageNum=${boardPageList.getPrePage()})}">&laquo;</a>
+                    </li>
+                    <!--            네비게이션 버튼-->
+                    <!--            th:each를 사용하여 페이지네이션 버튼을 생성함 -->
+                    <!--            #numbers : thymeleaf에서 제공하는 숫자 유틸리티 객체 -->
+                    <!--            #numbers.sequence(시작번호, 끝번호) : 시작번호부터 끝번호까지의 숫자 배열을 생성 -->
+                    <li class="page-item"
+                        th:each="page : ${#numbers.sequence(boardPageList.getNavigateFirstPage(), boardPageList.getNavigateLastPage())}"
+                        th:classappend="${page == boardPageList.getPageNum()} ? 'active'">
+                        <a class="page-link" href="#" th:href="@{/user/writingList(pageNum=${page})}" th:text="${page}">1</a>
+                    </li>
+                    <!--            다음 페이지 버튼-->
+                    <!--            getNextPage() : PageHelper 클래스 타입의 객체가 가지고 있는 nextPage 값 가져오기 -->
+                    <li class="page-item" th:classappend="${boardPageList.getNextPage() == 0} ? 'disabled'">
+                        <a class="page-link" href="#"
+                           th:href="@{/user/writingList(pageNum=${boardPageList.getNextPage()})}">&raquo;</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

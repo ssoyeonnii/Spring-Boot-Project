@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"></script>
+    <style>
+        /*#detailbg{*/
+        /*    background: rgba(0,0,0,0.03);*/
+        /*}*/
+        *{
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+        .hide {
+            display: none;
+        }
+        #reviewFormContainer {
+            margin-top: 5px; /* 원하는 간격으로 조절하세요 */
+        }
+        #showFormBtn {
+            width: 100%;
+        }
+        #submitBtn {
+            width: 100%;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr; /* 첫 번째 열이 3/4, 두 번째 열이 1/4 */
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .grid-item {
+            overflow-y: auto;
+            height: 100vh; /* 높이를 화면 높이로 조절 */
+        }
+
+        /*html, body{height: 100%}*/
+
+        header{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            z-index: 1000;
+            background-color: white;
+        }
+
+        main{
+            height:auto;
+            min-height: 100%;
+            padding-bottom: 145px;
+        }
+
+        /*footer{*/
+        /*    height: 145px;*/
+        /*    position: relative;*/
+        /*    transform : translateY(-100%);*/
+        /*}*/
+
+        body{
+            -ms-overflow-style: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /*특정 부분 스크롤바 없애기*/
+
+        .grid-container{
+            -ms-overflow-style: none;
+        }
+        .grid-container::-webkit-scrollbar{
+            display:none;
+        }
+        #top-btn {
+            display: none;
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 999;
+            background-color: white;
+            border: 2px solid #dbdbdb;
+            outline: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            font-size: 20px;
+            font-weight: 500;
+            color: #333333;
+        }
+    </style>
+
+
+</head>
+
+<body>
+<div th:replace="~{/layout/header :: headerNavbar}"></div>
+
+<div style="flex: 1; display: flex; overflow: hidden; margin-top: 80px" id="detailbg" class="grid-container">
+    <div class="grid-item" style="flex: 3; width: 75%;">
+        <div th:attr="data-idx=${idx}" id="idxValue"></div>
+        <div id="body" class="mt-3" ></div>
+        <div class="mb-5">
+            <div id="googleMap" style="height: 500px; width: 100%;" class="mt-3 container" ></div>
+        </div>
+        <script type="text/javascript" th:src="@{/js/detailjs.js}"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZrlhq8iR95fBGKRAN-d0oly8k3qQW6xI&callback=myMap"></script>
+    </div>
+    <div style="flex: 1; overflow-y: auto; width: 25%" class="grid-item mt-3">
+        <div class="col-sm">
+            <button class="btn btn-outline-info " id="showFormBtn">리뷰 작성</button>
+        </div>
+        <div>
+            <div class="hide" id="reviewFormContainer">
+                <form action="/review/write" method="post" enctype="multipart/form-data">
+                    <div>
+                        <input type="file" class="form-control" id="file" name="file" multiple>
+                    </div>
+                    <div class="mt-2">
+                        <textarea class="form-control" id="contents" name="reviewContent" rows="5" placeholder="내용을 입력하세요"></textarea>
+                    </div>
+                    <div class="mt-2">
+                        <button type="submit" class="btn btn-info text-light" id="submitBtn">등록</button>
+                    </div>
+                    <input type="text" name="reviewStoreIdx" hidden="hidden" th:value="${idx}">
+                </form>
+            </div>
+            <div id="reviewList">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

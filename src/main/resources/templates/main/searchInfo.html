@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"></script>
+
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: visible;
+        }
+
+        .section_bg_color {
+            height: 500px; /* Set the height of your sections */
+        }
+
+        #bg-1 {
+            position: relative;
+            background: url('https://www.visitbusan.net/images/sub2023/bg_taste_busan.png') center/cover;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        #bg-1 h1 {
+            font-size: 36px;
+            margin: 10px 0;
+        }
+
+        #bg-1 p {
+            font-size: 18px;
+        }
+
+        /* Stylish search box */
+        .search-box {
+            margin-top: 20px;
+            display: flex;
+            max-width: 400px;
+            width: 80%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            overflow: hidden;
+        }
+
+        .search-box input[type="text"] {
+            width: 80%;
+            padding: 15px;
+            border: none;
+            border-radius: 25px 0 0 25px;
+            outline: none;
+        }
+
+        .search-box button {
+            width: 20%;
+            padding: 15px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+        }
+
+        form.d-flex {
+            margin: 0 auto; /* 좌우 중앙 정렬 */
+            justify-content: center; /* 수평 중앙 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+        }
+
+        #items {
+            margin: 200px;
+            margin-top: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            /*justify-content: flex-start;*/
+        }
+        /*html, body{height: 100%}*/
+
+        header{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            z-index: 1000;
+            background-color: white;
+        }
+
+        /*main{*/
+        /*    height:auto;*/
+        /*    min-height: 100%;*/
+        /*    padding-bottom: 145px;*/
+        /*}*/
+
+        /*footer{*/
+        /*    height: 145px;*/
+        /*    position: relative;*/
+        /*    transform : translateY(-100%);*/
+        /*}*/
+
+    </style>
+</head>
+<body>
+
+<div th:replace="~{/layout/header :: headerNavbar}"></div>
+
+<div class="section_bg_color text-black" id="bg-1" style="margin-top: 75px">
+    <h1 class="mb-3">부산 맛집의 모든 것</h1>
+    <p class="mt-3">무라무라 마이무라</p>
+    <!-- Stylish search box -->
+    <form action="/main/search.do" method="get" class="d-flex" name="search-form" autocomplete="off"
+          style="width: 700px">
+        <div class="search-box">
+            <input type="text" id="keyword" name="keyword" placeholder="식당 이름으로 검색하세요">
+            <button>검색</button>
+        </div>
+    </form>
+</div>
+
+<div id="items" th:if="${not #lists.isEmpty(searchCardList)}">
+    <!-- 서버에서 받아온 검색 결과를 표시 -->
+    <div class="container mt-5 text-center">
+        <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-start" id="card">
+            <div th:each="card : ${searchCardList}" class="col mb-4">
+                <div class="card h-100">
+                    <a th:href="@{/main/detail(idx=${card.getIdx()})}">
+                        <img th:src="${card.getMAINIMGNORMAL()}" class="card-img-top" alt="Card image">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${card.getMAINTITLE()}"></h5>
+                        <p class="card-text" th:text="${card.getADDR1()}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--<div id="items" th:if="${not #lists.isEmpty(searchCardList)}">-->
+<!--    &lt;!&ndash; 서버에서 받아온 검색 결과를 표시 &ndash;&gt;-->
+<!--    <div div class="text-center">-->
+<!--        <div class="row row-cols-2 row-cols-md-4 g-1" id="card">-->
+<!--        -->
+<!--            <div th:each="card : ${searchCardList}" class="col mt-3 mx-auto">-->
+<!--                <div class="card">-->
+<!--                    <a th:href="@{/main/detail(idx=${card.getIdx()})}">-->
+<!--                        <img th:src="${card.getMAINIMGNORMAL()}" class="card-img-top"-->
+<!--                             alt="...">-->
+<!--                    </a>-->
+<!--                    <div class="card-body">-->
+<!--                        <h5 class="card-title" th:text="${card.getMAINTITLE()}"></h5>-->
+<!--                        <p class="card-text" th:text="${card.getADDR1()}"></p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<div th:if="${#lists.isEmpty(searchCardList)}" class="text-center mt-5" style="font-size: large">
+    <p>"<span th:text="${keyword}"></span>" 에 대한 검색 결과가 존재하지 않습니다.</p>
+    <p> 다른 검색어를 입력해주세요. </p>
+</div>
+
+</body>
+<div th:replace="~{/layout/footer :: footer}"></div>
+</html>

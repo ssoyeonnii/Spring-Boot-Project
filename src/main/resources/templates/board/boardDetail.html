@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"></script>
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: visible;
+        }
+
+        /*html, body{height: 100%}*/
+
+        header{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            z-index: 1000;
+            background-color: white;
+        }
+
+        /*main{*/
+        /*    height:auto;*/
+        /*    min-height: 100%;*/
+        /*    padding-bottom: 145px;*/
+        /*}*/
+
+        /*footer{*/
+        /*    height: 145px;*/
+        /*    position: relative;*/
+        /*    transform : translateY(-100%);*/
+        /*}*/
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            // 삭제 버튼 클릭 시 이벤트 처리
+            $('#btn-delete').on('click', function (event) {
+                const boardIdx = $("#boardIdx").val();
+                const boardUserId = $("#boardUserId").val();
+                event.preventDefault();
+
+                // 사용자에게 확인 메시지 표시
+                var confirmed = confirm("게시글을 삭제하시겠습니까?");
+                if (confirmed) {
+                    // 확인 클릭하면 삭제 controller로 이동
+                    location.href = "/board/boardDelete.do?boardIdx=" + boardIdx + "&boardUserId=" + boardUserId;
+                }
+                // 취소 클릭 시 action x
+                else {
+
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div th:replace="~{/layout/header :: headerNavbar}"></div>
+<main class="container p-3" style="margin-top: 120px">
+    <div class="border-bottom border-2 border-primary">
+        <h3 class="text-primary"><b><a href="/board/boardList.do" style="text-decoration: none;">자유 게시판</a></b></h3>
+    </div>
+    <div class="row mt-3 border-bottom border-2">
+        <div class="col-sm header">
+            <div class="row">
+                <b>
+                    <div class="text-start" th:text="${board.boardTitle}"></div>
+                </b>
+                <div class="col-sm mb-3">
+                    <span class="text-start text-black" th:text="${board.boardUserId}"></span>
+                    <span> | </span>
+                    <span th:text="${board.boardCreateDate}"></span>
+                </div>
+                <div class="col-sm" style="text-align: end">
+                    <div class="mb-3 ">
+                        조회
+                        <span th:text="${board.boardHitcnt}"></span>&nbsp; | 댓글
+                        <span th:text="${board.commentCount}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="border-bottom border-primary border-2">
+            <div class="col-sm mt-5 mb-5">
+                <p th:text="${board.boardContent}"></p>
+
+                <div th:each="list : ${boardFileList}">
+                    <img th:src="${list.getFreeboardStoredFileName()}" style="height: 500px" class="mb-5">
+                </div>
+
+            </div>
+
+            <b>
+                <div class="row mt-3 mb-2">
+                    <div class="col-sm">
+                        <a href="/board/boardList.do" class="text-decoration-none text-black" id="btn-list">목록</a>
+                    </div>
+
+                    <div class="col-sm justify-content-end text-end">
+                        <a th:href="@{/board/boardEdit.do(boardIdx=${board.boardIdx}, boardUserId=${board.boardUserId})}"
+                           class="text-decoration-none text-black" id="btn-edit">
+                            수정</a>
+
+                        <a href="#" class="text-decoration-none text-black text-end" id="btn-delete">
+                            삭제</a>
+                    </div>
+<!--                    삭제 버튼 클릭 시 script에서 필요한 값-->
+                    <input type="hidden" id="boardIdx" name="boardIdx" th:value="${board.boardIdx}">
+                    <input type="hidden" id="boardUserId" name="boardUserId" th:value="${board.boardUserId}">
+                </div>
+            </b>
+        </div>
+
+
+    </div>
+
+    <div class="container row text-center">
+        <col style="width : 15%">
+        <table class="table table-borderless">
+            <colgroup>
+                <col style="width : 15%">
+                <col style="width : 55%">
+                <col style="width : 15%">
+                <col style="width : 15%">
+            </colgroup>
+
+            <thead>
+            </thead>
+
+            <tbody>
+
+            <tr th:if="${#lists.size(comment)} > 0 " th:each="comment : ${comment}"
+                style="border-bottom: 1px solid #e0e0e0;">
+                <td th:text="${comment.cmUserId}"></td>
+                <td th:text="${comment.cmContent}"></td>
+                <td th:text="${comment.cmCreateDate}"></td>
+
+                <td id="comment-delete" class="justify-content-end">
+                    <a th:href="@{/board/commentDelete.do(cmIdx=${comment.cmIdx}, cmBoardIdx=${comment.cmBoardIdx},cmUserId=${comment.cmUserId})}"
+                       class="text-decoration-none text-black">x</a>
+                    <!--                    <a href="/board/commentDelete.do?cmIdx=" th:attrappend="href=${comment.cmIdx}"-->
+                    <!--                       class="text-decoration-none text-black">x</a>-->
+                </td>
+            </tr>
+
+            <tr th:unless="${#lists.size(comment)} > 0">
+                <td colspan="5"></td>
+            </tr>
+            </tbody>
+
+        </table>
+
+        <form action="/board/commentWrite.do" method="POST">
+            <div class="row p-2">
+                <input type="hidden" th:value="${board.boardIdx}" name="cmBoardIdx">
+                <input type="hidden" name="cmUserId" th:value="${board.boardUserId}">
+                <!--                commentDTO에 데이터를 보내고 처리를 해야하기 떄문에 name은 commentDTO와 일치시켜야함-->
+                <div class="col-sm d-flex mx-auto">
+                    <textarea class="form-control me-3" rows="1" placeholder="댓글을 입력해주세요" name="cmContent"
+                              style="width: 1100px"></textarea>
+                    <button type="submit" class="btn btn-outline-dark float-end" id="comment-input">등록
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+    <br><br><br><br><br>
+
+
+</main>
+
+<div th:replace="~{/layout/footer :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bitc.java501team3.mapper.CommentMapper">
+
+    <!--    댓글 목록 불러오기-->
+    <select id="commentList" parameterType="int" resultType="com.bitc.java501team3.dto.CommentDTO">
+        SELECT
+        cm_idx,cm_board_idx, cm_content, cm_user_id, cm_create_date
+        FROM
+        comment
+        WHERE
+        cm_board_idx = #{cmBoardIdx}
+        ORDER BY
+        cm_idx DESC
+    </select>
+
+    <!--    댓글등록하기-->
+    <insert id="insertComment" parameterType="com.bitc.java501team3.dto.CommentDTO">
+        INSERT INTO
+        comment(cm_board_idx , cm_content, cm_user_id, cm_create_date)
+        VALUES (#{cmBoardIdx} , #{cmContent} ,  #{cmUserId} , NOW())
+    </insert>
+
+    <!--    댓글삭제하기-->
+    <delete id="deleteComment" parameterType="Map">
+        Delete
+        FROM
+        comment
+        WHERE
+        cm_idx = #{cmIdx}
+        AND
+        cm_board_idx = #{cmBoardIdx}
+    </delete>
+</mapper>

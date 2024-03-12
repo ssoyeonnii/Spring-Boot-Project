@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+    <script th:inline="javascript">
+        var globalUserId = /*[[${session.userId}]]*/ '';
+    </script>
+    <script type="text/javascript" src="/js/mainjs.js"></script>
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding-top: 75px;
+            box-sizing: border-box;
+            overflow: visible;
+        }
+
+        .section_bg_color {
+            height: 500px; /* Set the height of your sections */
+        }
+
+        #bg-1 {
+            position: relative;
+            background: url('https://www.visitbusan.net/images/sub2023/bg_taste_busan.png') center/cover;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        #bg-1 h1 {
+            font-size: 36px;
+            margin: 10px 0;
+        }
+
+        #bg-1 p {
+            font-size: 18px;
+        }
+
+        /* Stylish search box */
+        .search-box {
+            margin-top: 20px;
+            display: flex;
+            max-width: 400px;
+            width: 80%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            overflow: hidden;
+        }
+
+        .search-box input[type="text"] {
+            width: 80%;
+            padding: 15px;
+            border: none;
+            border-radius: 25px 0 0 25px;
+            outline: none;
+        }
+
+        .search-box button {
+            width: 20%;
+            padding: 15px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+        }
+        #card-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #card-btn:hover {
+            background-color: #45a049;
+        }
+        #items{
+            margin: 200px;
+            margin-top: 200px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #map-bg{
+            margin-top: 200px;
+            /*background-color: rgba(175,177,179,0.14);*/
+
+        }
+        form.d-flex {
+            margin: 0 auto; /* 좌우 중앙 정렬 */
+            justify-content: center; /* 수평 중앙 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+        }
+        #top-btn {
+            display: none;
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 999;
+            background-color: white;
+            border: 2px solid #dbdbdb;
+            outline: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            font-size: 20px;
+            font-weight: 500;
+            color: #333333;
+        }
+        html, body{height: 100%}
+
+        header{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            z-index: 1000;
+            background-color: white;
+        }
+
+        main{
+            height:auto;
+            min-height: 100%;
+            padding-bottom: 145px;
+        }
+
+        footer{
+            height: 145px;
+            position: relative;
+            transform : translateY(-100%);
+        }
+    </style>
+
+    <script>
+        $(document).ready(function() {
+
+            // Top 버튼 특정 스크롤높이에서만 보이기 / 숨기기
+            $(window).scroll(function(){
+                if($(this).scrollTop() > 100){
+                    $('#top-btn').fadeIn();
+                }else{
+                    $('#top-btn').fadeOut();
+                }
+            });
+
+            // Top 버튼 클릭시 페이지 상단으로 이동
+            $('#top-btn').click(function(){
+                $('html, body').animate({scrollTop : 0}, 10);
+                return false;
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+<div th:replace="~{/layout/header :: headerNavbar}"></div>
+
+<main>
+    <div class="section_bg_color text-black" id="bg-1">
+        <h1>부산 맛집의 모든 것</h1>
+        <p>무라무라 마이무라</p>
+        <!-- Stylish search box -->
+        <form action="/main/search.do" method="get" class="d-flex" name="search-form" autocomplete="off" style="width: 700px">
+            <div class="search-box">
+                <input type="text" id="keyword" name="keyword" placeholder="식당 이름으로 검색하세요">
+                <button>검색</button>
+            </div>
+        </form>
+    </div>
+
+
+
+    <div id="items">
+        <div class="text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-bookmark-check-fill mb-4" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zm8.854-9.646a.5.5 0 0 0-.708-.708L7.5 7.793 6.354 6.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+            </svg>
+            <h1 class="mb-5">맛집 둘러보기</h1>
+        </div>
+        <h5 class="text-center mt-4 mb-5">두루두루 둘러보쌈</h5>
+        <div class="row row-cols-1 row-cols-md-4 g-4" id="card"></div>
+        <div id="card-btn" style="margin-top: 20px;">더보기</div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            cardView(0, 8);
+
+            //더보기 클릭 시 이벤트 발생
+            $("#card-btn").on('click', function() {
+
+                var startIndex = $("#card .col").length;
+                cardView(startIndex, 8);
+            });
+
+        });
+
+        function cardView(startIndex, count) {
+
+            $.ajax({
+                url: "/home.do",
+                type: "GET",
+                success: function(data){
+                    var container = $("#card");
+
+                    for (var i = startIndex; i < startIndex + count && i < data.length; i++) {
+                        var cardElement =
+                            `
+                        <div class="col mt-3">
+                            <div class="card h-100">
+                                <a href="/main/detail?idx=${i}">
+                                    <img src="${data[i].mainimgnormal}" class="card-img-top" alt="...">
+                                </a>
+                                <div class="card-body">
+                                    <h5 class="card-title">${data[i].maintitle}</h5>
+                                    <p class="card-text">${data[i].addr1}</p>
+                                </div>
+
+                            </div>
+                        </div>
+                `;
+                        container.append(cardElement);
+                    }
+
+                    if (startIndex + count >= data.length) {
+                        $("#card-btn").hide();
+                    }
+                },
+                error: function(){
+                    alert("err");
+                }
+            });
+        }
+    </script>
+    <script th:if="${param.updateMsg}" type="text/javascript">
+        alert("회원수정이 완료되었습니다.");
+    </script>
+    <div id="map-bg">
+        <hr>
+        <br><br><br><br><br>
+        <div class="text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-bookmark-check mb-4" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/>
+            </svg>
+            <h1 class="mb-5">지도로 맛집찾기</h1>
+        </div>
+        <h5 class="text-center mt-4">한눈에 보는 부산 로컬 맛집</h5>
+        <div id="map" style="flex: 1; display: flex; overflow: hidden; margin: 10%;">
+            <div id="googleMap" style="flex: 3;"></div>
+            <div class="tab-container" style="flex: 1; overflow-y: auto;">
+                <ul class="tabs" style="position: sticky; top: 0">
+                    <li class="tab text-center" onclick="changeTab(1)">목록</li>
+                    <li class="tab text-center" onclick="changeTab(2)">즐겨찾기</li>
+                </ul>
+                <div class="tab-content active" id="tab1">탭 1의 내용입니다.</div>
+                <div class="tab-content" id="tab2">탭 2의 내용입니다.</div>
+            </div>
+            <div class="modal fade" id="markerModal" tabindex="-1" role="dialog" aria-labelledby="markerModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="markerModalLabel">장소</h5>
+                            <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="markerModalBody">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZrlhq8iR95fBGKRAN-d0oly8k3qQW6xI&callback=myMap">
+            </script>
+        </div>
+    </div>
+
+    <br>
+</main>
+<div th:replace="~{/layout/footer :: footer}"></div>
+<button id="top-btn"> ▲ <br/> TOP </button >
+</body>
+</html>

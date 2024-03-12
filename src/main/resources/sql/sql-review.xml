@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bitc.java501team3.mapper.ReviewMapper">
+
+    <insert id="insertReview" parameterType="com.bitc.java501team3.dto.ReviewDTO" useGeneratedKeys="true" keyProperty="cmIdx">
+        INSERT INTO
+        review (review_store_idx, review_content, review_user_id, review_create_date)
+        VALUES
+        (#{reviewStoreIdx}, #{reviewContent}, #{reviewUserId}, now())
+    </insert>
+
+    <insert id="insertReviewFileList" parameterType="com.bitc.java501team3.dto.ReviewFileDTO">
+        INSERT INTO
+        review_file(file_review_idx, file_review_orgfile_name, file_review_storedfile_name, file_review_filesize, file_review_userid, file_review_createdate)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.fileReviewIdx}, #{item.fileReviewOrgfileName}, #{item.fileReviewStoredfileName} , #{item.fileReviewFilesize} , #{item.fileReviewUserid} , NOW())
+        </foreach>
+    </insert>
+
+
+    <select id="selectReviewList" parameterType="int" resultType="com.bitc.java501team3.dto.ReviewDTO" >
+        SELECT
+        review_idx, review_store_idx, review_content, review_user_id, review_create_date
+        FROM
+        review
+        WHERE
+        review_store_idx = #{reviewStoreIdx}
+        ORDER BY
+        review_create_date DESC;
+    </select>
+
+    <select id="selectReviewFileInfo" parameterType="com.bitc.java501team3.dto.ReviewFileDTO" resultType="com.bitc.java501team3.dto.ReviewFileDTO">
+        SELECT
+            file_review_idx,
+            file_review_orgfile_name,
+            SUBSTRING_INDEX(file_review_storedfile_name,'upload',-1) file_review_storedfile_name,
+            file_review_filesize,
+            file_review_userid,
+            file_review_createdate
+        FROM
+            review_file
+        WHERE
+            file_review_idx = #{fileReviewIdx}
+        AND
+            file_review_deleted_yn = 'N';
+    </select>
+
+</mapper>
